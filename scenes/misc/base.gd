@@ -119,7 +119,7 @@ func _ready():
 
 func startGame():
 	if (true):
-		switchScene("one/start")
+		switchScene("one/test")
 		positionPlayer()
 	elif (prevSaveLocation != ""):
 		switchScene(prevSaveLocation)

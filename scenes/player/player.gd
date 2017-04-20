@@ -10,7 +10,7 @@ const JUMP_MAX_AIRBORNE_TIME = 0.2
 const SLIDE_STOP_VELOCITY = 1.0 # One pixel per second
 const SLIDE_STOP_MIN_TRAVEL = 1.0 # One pixel
 const GRAVITY = 600
-const JUMP_SPEED = 220
+const JUMP_SPEED = 200
 const ROLL_SPEED = 90
 const ATTACK_ONE_TIME = 30
 const ATTACK_TWO_TIME = 24
@@ -71,7 +71,7 @@ var tongued = false
 var hasLilly = false
 var hasLaser = true
 var inPoison = false
-
+var secondJump = false
 
 #TIMERS
 var laserTimer = 0
@@ -159,7 +159,6 @@ func stateMachine(delta):
 
 #ACTIONS
 func doNormal(delta):
-	print('testage')
 	var force = Vector2(0, GRAVITY)
 	var stop = true
 	var walk_left = Input.is_action_pressed("move_left")
@@ -214,6 +213,7 @@ func doNormal(delta):
 			# If angle to the "up" vectors is < angle tolerance
 			# char is on floor
 			if (!grounded):
+				secondJump = false
 				grounded = true
 #				get_node("SamplePlayer2D").play("land")
 			airAttackUsed = false
@@ -404,6 +404,7 @@ func resetJump():
 	jumping = false
 	on_air_time = 0
 	prev_jump_pressed = false
+	secondJump = false
 	isFloating = false
 
 func doClimb(delta):
@@ -654,6 +655,13 @@ func checkJump():
 		grounded = false
 		jumpInput = true
 		velocity.y = -JUMP_SPEED
+		jumping = true
+		return true
+	if (prev_jump_pressed and jump and !secondJump and !jumpInput):
+		get_node("SamplePlayer2D").play("jump")
+		secondJump = true
+		velocity.y = -JUMP_SPEED
+		jumpInput = true
 		jumping = true
 		return true
 
