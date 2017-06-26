@@ -18,6 +18,7 @@ const ATTACK_THREE_TIME = 24
 const IMMUNE_TIME = 60
 const IMMUNE_COOLDOWN = 20
 const RECENT_ATTACK_TIME = 3
+const LASER_TIME_CONST = 10
 
 #ONREADY
 onready var anim = get_node("Sprite/AnimationPlayer")
@@ -85,8 +86,8 @@ var immuneTimer = 0
 var visibleCount = 0
 var immuneCooldown = 0
 var freshVine = 0
-var shots = 2
 var recentAttackTimer = 0
+var animHoldTimer = 0
 
 func save():
 	var saveData = {
@@ -158,7 +159,7 @@ func stateMachine(delta):
 		return doHoney()
 
 #ACTIONS
-func doNormal(delta):
+func doWalk(delta):
 	var force = Vector2(0, GRAVITY)
 	var stop = true
 	var walk_left = Input.is_action_pressed("move_left")
@@ -213,9 +214,8 @@ func doNormal(delta):
 			# If angle to the "up" vectors is < angle tolerance
 			# char is on floor
 			if (!grounded):
-				secondJump = false
 				grounded = true
-#				get_node("SamplePlayer2D").play("land")
+				get_node("SamplePlayer2D").play("land")
 			airAttackUsed = false
 			fixAirVelocity = false
 			isFloating = false
@@ -253,20 +253,21 @@ func doNormal(delta):
 	
 	checkJump()
 	
-	on_air_time += delta
-	prev_jump_pressed = jump
-	
 	if (velocity.x > 0):
 		changeDirection("right")
 	elif (velocity.x < 0):
 		changeDirection("left")
 	
-	if (!isFloating):
-		if (velocity.x == 0 and velocity.y == 0):
-			changeAnimation("idle")
-		else:
-			changeAnimation("run")
+	on_air_time += delta
+	prev_jump_pressed = jump
+
+func doNormal(delta):
+	doWalk(delta)
 	
+	if (velocity.x == 0 and velocity.y == 0):
+		changeAnimation("idle")
+	else:
+		changeAnimation("run")
 	
 	if (timeLeft == 0):
 		checkInputs()
@@ -291,23 +292,31 @@ func doRoll(delta):
 	move(rollVelocity)
 
 func doRangeAttack(delta):
-	laserTimer = 30
-	var force = Vector2(0, GRAVITY)
-	velocity += force*delta
-	move(velocity*delta)
+	if (!hasShot):
+		laserTimer = LASER_TIME_CONST
+		animHoldTimer = 5
+#	var force = Vector2(0, GRAVITY)
+#	velocity += force*delta
+#	move(velocity*delta)
 	var down = false
+	var up = false
 	if (Input.is_action_pressed("move_down")):
 		changeAnimation("rangedown")
 		down = true
+	elif (Input.is_action_pressed("move_up")):
+		changeAnimation("rangeup")
+		up = true
 	else:
 		changeAnimation("range")
 	if (!hasShot):
-			addLaserShot(down)
-	if (!anim.is_playing()):
-		playerState = "normal"
+			addLaserShot(down, up)
+	doWalk(delta)
+	
+	if (!anim.is_playing() and laserTimer <= 0):
 		hasShot = false
-		get_tree().get_root().get_node("Node2D/CanvasLayer/Control/laser").useBattery(shots)
-		shots = shots - 1
+		if (Input.is_action_pressed("range_attack")):
+			return
+		playerState = "normal"
 		return
 
 func doHit(body):
@@ -612,7 +621,7 @@ func checkInputs():
 		hasFloated = true
 	if (Input.is_action_pressed("use_item") and grounded):
 		print('use item')
-	if (Input.is_action_pressed("range_attack") and shots >= 0 and laserTimer <= 0 and hasLaser):
+	if (Input.is_action_pressed("range_attack") and laserTimer <= 0 and hasLaser):
 		playerState = "range"
 	checkClimbInput()
 	checkAttackInput()
@@ -647,8 +656,8 @@ func checkImmune():
 
 func checkJump():
 	var jump = Input.is_action_pressed("jump")
-	if (Input.is_action_pressed("move_down") and grounded):
-		return
+#	if (Input.is_action_pressed("move_down") and grounded):
+#		return
 	if (on_air_time < JUMP_MAX_AIRBORNE_TIME and jump and !prev_jump_pressed and !jumping and !jumpInput):
 		get_node("SamplePlayer2D").play("jump")
 		addJumpcloud()
@@ -706,24 +715,27 @@ func addJumpcloud():
 		get_tree().get_root().get_node("Node2D/temp").add_child(node, true)
 		node.set_pos(pos)
 
-func addLaserShot(down):
+func addLaserShot(down, up):
 	get_node("SamplePlayer2D").play("laser")
 	hasShot = true
 	var pos = get_pos()
-	pos.y = pos.y + 6
+	pos.y = pos.y + 3
 	var scene = load("res://scenes/player/laser.tscn")
 	var node = scene.instance()
 	node.set("down", down)
+	node.set("up", up)
 	if (directionModifier > 0):
 		node.set_flip_h(true)
-		pos.x = pos.x + 24
+		pos.x = pos.x + 12
 	else:
 		node.set_flip_h(false)
-		pos.x = pos.x  - 5
+		pos.x = pos.x  - 10
 	if (down):
 		pos.x = get_pos().x + 8
 		pos.y = pos.y + 20
-		boostJump()
+	if (up):
+		pos.x = get_pos().x - 8
+		pos.y = pos.y - 10
 	node.set("directionModifier", directionModifier)
 	get_tree().get_root().get_node("Node2D/temp").add_child(node, true)
 	node.set_pos(pos)

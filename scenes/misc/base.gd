@@ -113,7 +113,7 @@ func _ready():
 	randomize()
 	setupScene()
 	set_fixed_process(true)
-	get_tree().set_debug_collisions_hint(true)
+	get_tree().set_debug_collisions_hint(false)
 	startGame()
 	pass
 
