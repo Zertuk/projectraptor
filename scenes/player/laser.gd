@@ -1,12 +1,13 @@
 
 extends Sprite
 var directionModifier = 1
-var timeLeft = 500
 var down = false
 var up = false
-var speed = 3
+var speed = 0
+var anim
 
 func _ready():
+	anim = get_node("AnimationPlayer")
 	changeDirection()
 	set_fixed_process(true)
 	get_node("Area2D").connect("body_enter", self, "doHit")
@@ -22,6 +23,7 @@ func changeDirection():
 		set_rot(1.5708)
 	elif (up):
 		set_rot(1.5708)
+		set_scale(Vector2(-1, -1))
 	else:
 		set_rot(0)
 
@@ -52,9 +54,8 @@ func _fixed_process(delta):
 	elif(up):
 		movement = Vector2(0, -speed)
 	set_pos(Vector2(pos.x + movement.x, pos.y + movement.y))
-	if (timeLeft <= 0):
+	if (!anim.is_playing()):
 		queue_free()
-	timeLeft = timeLeft -1
 
 
 

@@ -18,7 +18,7 @@ const ATTACK_THREE_TIME = 24
 const IMMUNE_TIME = 60
 const IMMUNE_COOLDOWN = 20
 const RECENT_ATTACK_TIME = 3
-const LASER_TIME_CONST = 10
+const LASER_TIME_CONST = 40
 
 #ONREADY
 onready var anim = get_node("Sprite/AnimationPlayer")
@@ -292,9 +292,6 @@ func doRoll(delta):
 	move(rollVelocity)
 
 func doRangeAttack(delta):
-	if (!hasShot):
-		laserTimer = LASER_TIME_CONST
-		animHoldTimer = 5
 #	var force = Vector2(0, GRAVITY)
 #	velocity += force*delta
 #	move(velocity*delta)
@@ -309,10 +306,12 @@ func doRangeAttack(delta):
 	else:
 		changeAnimation("range")
 	if (!hasShot):
-			addLaserShot(down, up)
+		addLaserShot(down, up)
+		laserTimer = LASER_TIME_CONST
+		print(laserTimer)
 	doWalk(delta)
 	
-	if (!anim.is_playing() and laserTimer <= 0):
+	if (laserTimer <= 0):
 		hasShot = false
 		if (Input.is_action_pressed("range_attack")):
 			return
@@ -719,23 +718,23 @@ func addLaserShot(down, up):
 	get_node("SamplePlayer2D").play("laser")
 	hasShot = true
 	var pos = get_pos()
-	pos.y = pos.y + 3
+	pos.y = pos.y + 5
 	var scene = load("res://scenes/player/laser.tscn")
 	var node = scene.instance()
 	node.set("down", down)
 	node.set("up", up)
 	if (directionModifier > 0):
 		node.set_flip_h(true)
-		pos.x = pos.x + 12
+		pos.x = pos.x + 40
 	else:
 		node.set_flip_h(false)
-		pos.x = pos.x  - 10
+		pos.x = pos.x  - 40
 	if (down):
-		pos.x = get_pos().x + 8
-		pos.y = pos.y + 20
+		pos.x = get_pos().x
+		pos.y = pos.y + 36
 	if (up):
-		pos.x = get_pos().x - 8
-		pos.y = pos.y - 10
+		pos.x = get_pos().x
+		pos.y = pos.y - 42
 	node.set("directionModifier", directionModifier)
 	get_tree().get_root().get_node("Node2D/temp").add_child(node, true)
 	node.set_pos(pos)
