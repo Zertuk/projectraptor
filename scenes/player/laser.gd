@@ -21,9 +21,10 @@ func tilemapHit(area):
 func changeDirection():
 	if (down):
 		set_rot(1.5708)
+		set_scale(Vector2(-directionModifier, 1))
 	elif (up):
 		set_rot(1.5708)
-		set_scale(Vector2(-1, -1))
+		set_scale(Vector2(directionModifier, -1))
 	else:
 		set_rot(0)
 

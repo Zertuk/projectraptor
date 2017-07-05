@@ -10,7 +10,7 @@ const JUMP_MAX_AIRBORNE_TIME = 0.2
 const SLIDE_STOP_VELOCITY = 1.0 # One pixel per second
 const SLIDE_STOP_MIN_TRAVEL = 1.0 # One pixel
 const GRAVITY = 600
-const JUMP_SPEED = 200
+const JUMP_SPEED = 160
 const ROLL_SPEED = 90
 const ATTACK_ONE_TIME = 30
 const ATTACK_TWO_TIME = 24
@@ -214,6 +214,7 @@ func doWalk(delta):
 			# If angle to the "up" vectors is < angle tolerance
 			# char is on floor
 			if (!grounded):
+				resetJump()
 				grounded = true
 				get_node("SamplePlayer2D").play("land")
 			airAttackUsed = false
@@ -260,6 +261,7 @@ func doWalk(delta):
 	
 	on_air_time += delta
 	prev_jump_pressed = jump
+
 
 func doNormal(delta):
 	doWalk(delta)

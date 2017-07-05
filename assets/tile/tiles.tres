@@ -8,12 +8,12 @@
 custom_solver_bias = 0.0
 points = Vector2Array( -8.2, -7.2, -0.200001, -7.2, -0.200001, 0.799999, -8.2, 0.799999 )
 
-[sub_resource type="ConvexPolygonShape2D" id=3]
+[sub_resource type="ConvexPolygonShape2D" id=2]
 
 custom_solver_bias = 0.0
 points = Vector2Array( -7.6, -7.6, 8.4, -7.6, 8.4, 8.4, -7.6, 8.4 )
 
-[sub_resource type="ConvexPolygonShape2D" id=2]
+[sub_resource type="ConvexPolygonShape2D" id=3]
 
 custom_solver_bias = 0.0
 points = Vector2Array( -9.2, -8.2, 6.8, -8.2, 6.8, 7.8, -9.2, 7.8 )
@@ -35,7 +35,7 @@ points = Vector2Array( -9.2, -8.2, 6.8, -8.2, 6.8, 7.8, -9.2, 7.8 )
 1/occluder_offset = Vector2( 8, 8 )
 1/navigation_offset = Vector2( 8, 8 )
 1/shape_offset = Vector2( 8, 8 )
-1/shapes = [ SubResource( 3 ) ]
+1/shapes = [ SubResource( 2 ) ]
 2/name = "street"
 2/texture = ExtResource( 2 )
 2/tex_offset = Vector2( 0, 0 )
@@ -43,5 +43,5 @@ points = Vector2Array( -9.2, -8.2, 6.8, -8.2, 6.8, 7.8, -9.2, 7.8 )
 2/occluder_offset = Vector2( 8, 8 )
 2/navigation_offset = Vector2( 8, 8 )
 2/shape_offset = Vector2( 8, 8 )
-2/shapes = [ SubResource( 2 ) ]
+2/shapes = [ SubResource( 3 ) ]
 
