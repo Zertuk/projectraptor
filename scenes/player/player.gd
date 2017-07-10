@@ -698,10 +698,10 @@ func addSideCloud():
 		var node = scene.instance()
 		if (directionModifier > 0):
 			node.set_flip_h(true)
-			pos.x = pos.x + 2
+			pos.x = pos.x - 5
 		else:
 			node.set_flip_h(false)
-			pos.x = pos.x + 12
+			pos.x = pos.x + 5
 		get_tree().get_root().get_node("Node2D/temp").add_child(node, true)
 		node.set_pos(pos)
 
@@ -709,7 +709,6 @@ func addSideCloud():
 func addJumpcloud():
 	if (!vine):
 		var pos = get_pos()
-		pos.x = pos.x + 8
 		pos.y = pos.y + 2
 		var scene = load("res://scenes/player/jumpcloud.tscn")
 		var node = scene.instance()
