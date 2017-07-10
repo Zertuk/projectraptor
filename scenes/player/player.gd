@@ -735,8 +735,11 @@ func addLaserShot(down, up):
 		pos.x = get_pos().x
 		pos.y = pos.y + 36
 	if (up):
-		pos.x = get_pos().x
-		pos.y = pos.y - 42
+		if (directionModifier > 0):
+			pos.x = get_pos().x - 2
+		else:
+			pos.x = get_pos().x + 2
+		pos.y = pos.y - 41
 	node.set("directionModifier", directionModifier)
 	get_tree().get_root().get_node("Node2D/temp").add_child(node, true)
 	node.set_pos(pos)
