@@ -720,7 +720,7 @@ func addLaserShot(down, up):
 	get_node("SamplePlayer2D").play("laser")
 	hasShot = true
 	var pos = get_pos()
-	pos.y = pos.y + 5
+	pos.y = pos.y + 4
 	var scene = load("res://scenes/player/laser.tscn")
 	var node = scene.instance()
 	node.set("down", down)
