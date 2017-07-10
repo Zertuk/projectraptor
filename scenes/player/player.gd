@@ -18,7 +18,7 @@ const ATTACK_THREE_TIME = 24
 const IMMUNE_TIME = 60
 const IMMUNE_COOLDOWN = 20
 const RECENT_ATTACK_TIME = 3
-const LASER_TIME_CONST = 40
+const LASER_TIME_CONST = 30
 
 #ONREADY
 onready var anim = get_node("Sprite/AnimationPlayer")
