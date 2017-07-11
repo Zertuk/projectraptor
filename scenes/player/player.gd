@@ -18,7 +18,7 @@ const ATTACK_THREE_TIME = 24
 const IMMUNE_TIME = 60
 const IMMUNE_COOLDOWN = 20
 const RECENT_ATTACK_TIME = 3
-const LASER_TIME_CONST = 30
+const LASER_TIME_CONST = 20
 
 #ONREADY
 onready var anim = get_node("Sprite/AnimationPlayer")
@@ -314,9 +314,6 @@ func doRangeAttack(delta):
 	doWalk(delta)
 	
 	if (laserTimer <= 0):
-		hasShot = false
-		if (Input.is_action_pressed("range_attack")):
-			return
 		playerState = "normal"
 		return
 
@@ -622,7 +619,7 @@ func checkInputs():
 		hasFloated = true
 	if (Input.is_action_pressed("use_item") and grounded):
 		print('use item')
-	if (Input.is_action_pressed("range_attack") and laserTimer <= 0 and hasLaser):
+	if (Input.is_action_pressed("range_attack") and laserTimer <= 0 and hasLaser and !hasShot):
 		playerState = "range"
 	checkClimbInput()
 	checkAttackInput()
@@ -786,6 +783,8 @@ func _fixed_process(delta):
 		
 		if (laserTimer > 0):
 			laserTimer = laserTimer - 1
+		elif (laserTimer <= 0 and !Input.is_action_pressed("range_attack")):
+			hasShot = false
 		
 		resetJumpInput()
 		checkQueuedAttack()
